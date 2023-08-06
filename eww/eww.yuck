@@ -1,0 +1,88 @@
+(defwidget bar0 []
+  (box :class "bar"
+    (centerbox :orientation "h"
+      (workspace0)
+      (clock)
+      (other))))
+ 
+(defwidget bar1 []
+  (box :class "bar"
+    (centerbox :orientation "h"
+      (workspace1)
+      (clock)
+      (other))))
+ 
+(defwidget other []
+  (box :class "other" :orientation "h" :space-evenly false :halign "end" "KDEConnect, Swaync, volume, Other")) 
+ 
+
+(defpoll date-time :interval "1s"
+  "scripts/datetime.sh")
+
+(defwidget clock [] 
+  (box :class "clock"
+    :orientation "h"
+    :space-evenly false
+    :halign "center"
+    date-time))
+     
+(deflisten workspaces :initial "[]" "bash ~/.config/eww/scripts/get-workspaces")
+(deflisten current_workspace0 :initial "1" "bash ~/.config/eww/scripts/get-active-workspace 0")
+(defwidget workspace0 []
+  (box 
+    :space-evenly true
+    :halign "start"
+    (label 
+      :text "${workspaces}${current_workspace0}" 
+      :visible false)
+    (for workspace in workspaces
+      (eventbox 
+        :onclick "hyprctl dispatch workspace ${workspace.id}"
+        (box 
+          :class "workspace-entry ${workspace.id == current_workspace0 ? "current" : ""} ${workspace.windows > 0 ? "occupied" : "empty"}"
+          (label
+            :text "${workspace.id}"))))))
+  
+
+(deflisten current_workspace1 :initial "1" "bash ~/.config/eww/scripts/get-active-workspace 1")
+(defwidget workspace1 []
+  (box 
+    :space-evenly true
+    :halign "start"
+    (label 
+      :text "${workspaces}${current_workspace1}" 
+      :visible false)
+    (for workspace in workspaces
+      (eventbox 
+        :onclick "hyprctl dispatch workspace ${workspace.id}"
+        (box 
+          :class "workspace-entry ${workspace.id == current_workspace1 ? "current" : ""} ${workspace.windows > 0 ? "occupied" : "empty"}"
+          (label
+            :text "${workspace.id}"))))))
+
+(defwindow topBar0
+  :monitor 0
+  :stacking "bt"
+  :exclusive true
+  :focusable false
+  :geometry (geometry
+              :x "0%"
+              :y "2px"
+              :width "100%"
+              :height "1%"
+              :anchor "top center")
+  (bar0))
+  
+(defwindow topBar1
+  :monitor 1
+  :stacking "bt"
+  :exclusive true
+  :focusable false
+  :geometry (geometry
+              :x "0%"
+              :y "2px"
+              :width "100%"
+              :height "1%"
+              :anchor "top center")
+  (bar1))
+  

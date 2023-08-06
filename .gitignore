@@ -9,3 +9,5 @@ nvim/plugin/packer_compiled.lua
 !ctpv/
 !bat/
 !starship.toml
+!hypr/
+!eww/
