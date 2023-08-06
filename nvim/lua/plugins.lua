@@ -15,6 +15,8 @@ return require('packer').startup(function()
   use 'hrsh7th/cmp-buffer' -- autocompletion for buffer
   use 'folke/tokyonight.nvim' -- Theme
   use 'nvim-lualine/lualine.nvim' -- Visual bar on the bottom
+  use 'gpanders/nvim-parinfer' -- Auto indentation for lisp based languages
+  use 'elkowar/yuck.vim' -- Yuck (eww) language highlight
 
   use 'preservim/nerdtree' -- Visual file browser
   use 'Xuyuanp/nerdtree-git-plugin' -- Git status in nerd tree
