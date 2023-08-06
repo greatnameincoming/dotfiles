@@ -3,6 +3,7 @@
 !.gitignore
 
 !nvim/
+nvim/plugin/packer_compiled.lua
 !kitty/
 !lf/
 !ctpv/
