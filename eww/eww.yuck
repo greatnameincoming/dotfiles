@@ -13,7 +13,7 @@
       (other))))
  
 (defwidget other []
-  (box :class "other" :orientation "h" :space-evenly false :halign "end" "KDEConnect, Swaync, volume, Other")) 
+  (box :class "other" :orientation "h" :space-evenly false :halign "end" " , 󰍥 , 󰐥 , 󰅌 , Other")) 
  
 
 (defpoll date-time :interval "1s"
@@ -40,7 +40,7 @@
         (box 
           :class "workspace-entry ${workspace.id == current_workspace0 ? "current" : ""} ${workspace.windows > 0 ? "occupied" : "empty"}"
           (label
-            :text "${workspace.id == current_workspace0 ? "󰄯" : "󰄰"} "))))))
+            :text "${workspace.id == current_workspace0 ? "" : "${workspace.windows > 0 ? "󰺕" : ""}"} "))))))
   
 
 (deflisten current_workspace1 :initial "1" "bash ~/.config/eww/scripts/get-active-workspace 1")
@@ -56,7 +56,7 @@
         (box 
           :class "workspace-entry ${workspace.id == current_workspace1 ? "current" : ""} ${workspace.windows > 0 ? "occupied" : "empty"}"
           (label
-            :text "${workspace.id == current_workspace1 ? "󰄯" : "󰄰"} "))))))
+            :text "${workspace.id == current_workspace1 ? "" : "${workspace.windows > 0 ? "󰺕" : ""}"} "))))))
 
 (defwindow topBar0
   :monitor 0
@@ -69,6 +69,7 @@
               :width "100%"
               :height "1%"
               :anchor "top center")
+  :class "topBar"
   (bar0))
   
 (defwindow topBar1
@@ -82,5 +83,6 @@
               :width "100%"
               :height "1%"
               :anchor "top center")
+  :class "topBar"
   (bar1))
   
