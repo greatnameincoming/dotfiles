@@ -30,8 +30,7 @@
 (deflisten current_workspace0 :initial "1" "bash ~/.config/eww/scripts/get-active-workspace 0")
 (defwidget workspace0 []
   (box 
-    :space-evenly true
-    :halign "start"
+    :space-evenly false
     (label 
       :text "${workspaces}${current_workspace0}" 
       :visible false)
@@ -41,14 +40,13 @@
         (box 
           :class "workspace-entry ${workspace.id == current_workspace0 ? "current" : ""} ${workspace.windows > 0 ? "occupied" : "empty"}"
           (label
-            :text "${workspace.id}"))))))
+            :text "${workspace.id == current_workspace0 ? "󰄯" : "󰄰"} "))))))
   
 
 (deflisten current_workspace1 :initial "1" "bash ~/.config/eww/scripts/get-active-workspace 1")
 (defwidget workspace1 []
   (box 
-    :space-evenly true
-    :halign "start"
+    :space-evenly false
     (label 
       :text "${workspaces}${current_workspace1}" 
       :visible false)
@@ -58,7 +56,7 @@
         (box 
           :class "workspace-entry ${workspace.id == current_workspace1 ? "current" : ""} ${workspace.windows > 0 ? "occupied" : "empty"}"
           (label
-            :text "${workspace.id}"))))))
+            :text "${workspace.id == current_workspace1 ? "󰄯" : "󰄰"} "))))))
 
 (defwindow topBar0
   :monitor 0
