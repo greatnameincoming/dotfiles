@@ -1,5 +1,22 @@
 #!/usr/bin/env bash
-hyprctl monitors -j | jq --argjson m "$1" '.[] | select(.id==$m) | .activeWorkspace.id'
+monitor_id=$1
+hyprctl monitors -j | jq --argjson m "$monitor_id" '.[] | select(.id==$m) | .activeWorkspace.id'
+
+curr_monitor=$(hyprctl monitors -j | jq --argjson m "$monitor_id" '.[] | select(.id==$m) | .name' | tr -d '"')
+foc_monitor=$(hyprctl monitors -j | jq '.[] | select(.focused==true) | .name' | tr -d '"')
+found_last_in=$([[ $curr_monitor = $foc_monitor ]] && echo 1 || echo 0)
 
 socat -u UNIX-CONNECT:/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock - |
-  stdbuf -o0 awk -F '>>|,' -e '/^workspace>>/ {print $2}' -e '/^focusedmon>>/ {print $3}'
+  stdbuf -o0 awk -F '>>|,' -v current_monitor="$curr_monitor" -v found_last="$found_last_in" '
+    { 
+        if ($1 == "focusedmon" && $2 == current_monitor) { 
+            found_last = 1 
+        } 
+        else if ($1 == "workspace" && found_last) { 
+          print $2
+        } 
+        else if ($1 == "focusedmon") { 
+            found_last = 0 
+        } 
+    } 
+    '
