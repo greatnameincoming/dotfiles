@@ -4,4 +4,15 @@
 
 .topBar {
   font-family: MesloLGS Nerd Font Mono;
+  color: white;
+}
+
+.workspace-entry {
+  &.empty {
+    color: grey;
+  }
+
+  &.current, &.occupied {
+    color: white;
+  }
 }

@@ -1,21 +1,37 @@
-(defwidget bar0 []
-  (box :class "bar"
-    (centerbox :orientation "h"
-      (workspace0)
-      (clock)
-      (other))))
- 
-(defwidget bar1 []
-  (box :class "bar"
-    (centerbox :orientation "h"
-      (workspace1)
-      (clock)
-      (other))))
- 
-(defwidget other []
-  (box :class "other" :orientation "h" :space-evenly false :halign "end" " , 󰍥 , 󰐥 , 󰅌 , Other")) 
- 
 
+; Volume
+(defpoll volume :interval "1s"
+  "scripts/volume.sh")
+
+(defwidget volume []
+  (box :class "volume"
+    :orientation "h"
+    :space-evenly false
+    :halign "end"
+    volume))
+
+; Network 
+(defpoll network :interval "5s"
+  "scripts/network.sh")
+
+(defwidget network []
+  (box :class "network"
+    :orientation "h"
+    :space-evenly false
+    :halign "end"
+    network))
+    
+; Info widget
+(defwidget info []
+  (box :class "info" 
+       :orientation "h" 
+       :space-evenly false 
+       :halign "end"
+       :spacing 5
+    (network)
+    (volume))) 
+ 
+; Date time
 (defpoll date-time :interval "1s"
   "scripts/datetime.sh")
 
@@ -25,7 +41,8 @@
     :space-evenly false
     :halign "center"
     date-time))
-     
+
+; Workspaces
 (deflisten workspaces :initial "[]" "bash ~/.config/eww/scripts/get-workspaces")
 (deflisten current_workspace0 :initial "1" "bash ~/.config/eww/scripts/get-active-workspace 0")
 (defwidget workspace0 []
@@ -40,7 +57,7 @@
         (box 
           :class "workspace-entry ${workspace.id == current_workspace0 ? "current" : ""} ${workspace.windows > 0 ? "occupied" : "empty"}"
           (label
-            :text "${workspace.id == current_workspace0 ? "" : "${workspace.windows > 0 ? "󰺕" : ""}"} "))))))
+            :text "${workspace.id == current_workspace0 ? "" : ""} "))))))
   
 
 (deflisten current_workspace1 :initial "1" "bash ~/.config/eww/scripts/get-active-workspace 1")
@@ -56,8 +73,24 @@
         (box 
           :class "workspace-entry ${workspace.id == current_workspace1 ? "current" : ""} ${workspace.windows > 0 ? "occupied" : "empty"}"
           (label
-            :text "${workspace.id == current_workspace1 ? "" : "${workspace.windows > 0 ? "󰺕" : ""}"} "))))))
+            :text "${workspace.id == current_workspace1 ? "" : ""} "))))))
 
+; Bar widgets
+(defwidget bar0 []
+  (box :class "bar"
+    (centerbox :orientation "h"
+      (workspace0)
+      (clock)
+      (info))))
+ 
+(defwidget bar1 []
+  (box :class "bar"
+    (centerbox :orientation "h"
+      (workspace1)
+      (clock)
+      (info))))
+
+; Bar windows
 (defwindow topBar0
   :monitor 0
   :stacking "bt"
@@ -85,4 +118,3 @@
               :anchor "top center")
   :class "topBar"
   (bar1))
-  
