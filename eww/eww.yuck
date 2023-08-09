@@ -1,4 +1,3 @@
-
 ; Volume
 (defpoll volume :interval "1s"
   "scripts/volume.sh")
@@ -29,7 +28,8 @@
        :halign "end"
        :spacing 5
     (network)
-    (volume))) 
+    (volume)
+    (clock))) 
  
 ; Date time
 (defpoll date-time :interval "1s"
@@ -42,12 +42,209 @@
     :halign "center"
     date-time))
 
+; Music
+(defpoll song_title :interval "2s"
+  "scripts/music.sh --title")
+
+(defpoll song_artist :interval "2s"
+  "scripts/music.sh --artist")
+
+(defpoll song_album :interval "2s"
+  "scripts/music.sh --album")
+
+(defpoll song_status :interval "1s"
+  "scripts/music.sh --status")
+
+(defpoll song_time :interval "1s"
+  "scripts/music.sh --time")
+
+(defpoll song_cover :interval "2s"
+  "scripts/music.sh --cover")
+
+(defpoll song_current_time :interval "1s"
+  "scripts/music.sh --ctime")
+
+(defpoll song_end_time :interval "2s"
+  "scripts/music.sh --ttime")
+
+(defpoll song_volume :interval "2s"
+  "scripts/music.sh --volume")
+
+(defvar music_reveal_0 false)
+
+(defwidget music_0 []
+  (eventbox :class "song_bar"
+    :onhover "eww update music_reveal_0=true"
+    :onhoverlost "eww update music_reveal_0=false"
+    :onclick "scripts/popout.sh music ${song_status} 0"
+   (box
+     :vexpand "false"
+     :hexpand "false"
+     :orientation "h"
+     :space-evenly "false"
+     "${"${song_status}" == "STOP" ? "" : "󰝚 ${song_title} "}"
+     (revealer 
+       :transition "slideleft"
+       :reveal music_reveal_0
+       :duration "350ms"
+       (box
+         :vexpand "false"
+         :hexpand "false"
+         :wrap "true"
+         "- ${song_artist} "))
+     (box " 󰝚"))))
+    
+(defvar music_reveal_1 false)
+    
+(defwidget music_1 []
+  (eventbox :class "song_bar"
+    :onhover "eww update music_reveal_1=true"
+    :onhoverlost "eww update music_reveal_1=false"
+    :onclick "scripts/popout.sh music ${song_status} 1"
+   (box
+     :vexpand "false"
+     :hexpand "false"
+     :orientation "h"
+     :space-evenly "false"
+     "${"${song_status}" == "STOP" ? "" : "󰝚 ${song_title} "}"
+     (revealer 
+       :transition "slideleft"
+       :reveal music_reveal_1
+       :duration "350ms"
+       (box
+         :vexpand "false"
+         :hexpand "false"
+         :wrap "true"
+         "- ${song_artist} "))
+     (box " 󰝚"))))
+  
+(defwidget music_popout [monitor]
+  (eventbox
+    :onhoverlost "eww close music_window_${monitor}"
+    (box :class "music_popout"
+      :vexpand "false"
+      :hexpand "false"
+      :orientation "h"
+      :space-evenly "false"
+      (box :class "music_cover"
+        :style "background-image: url('${song_cover}');")
+
+      (box :class "music_popout_volume"
+        :orientation "v"
+        :space-evenly "false"
+        :vexpand "false"
+        :hexpand "false"
+        
+        (scale
+          :min 0
+          :max 100
+          :active "true"
+          :onchange "mpc -q volume {}"
+          :orientation "v"
+          :flipped "true"
+          :tooltip song_volume
+          :value song_volume)
+
+        (box :class "music_popout_volume_icon"
+          "󰕾"))
+
+      (box :class "music_popout_info" 
+        :orientation "v"
+        :hexpand "false"
+        :vexpand "false"
+
+        (label :class "song_title"
+          :halign "center"
+          :wrap "true"
+          :limit-width 20
+          :tooltip song_title
+          :text song_title)
+        (label :class "song_artist"
+          :halign "center"
+          :wrap "true"
+          :limit-width 20
+          :tooltip song_artist
+          :text song_artist)
+        (label :class "song_album"
+          :halign "center"
+          :wrap "true"
+          :limit-width 20
+          :tooltip song_album
+          :text song_album)
+
+        (box :class "music_popout_slider"
+          :orientation "h"
+          :space-evenly "false"
+          :vexpand "false"
+          :hexpand "false"
+
+          (label :class "song_current_time"
+            :halign "start"
+            :text song_current_time)
+          (box :class "song_time_slider"
+            :vexpand "false"
+            :hexpand "false"
+            :halign "center"
+            :space-evenly "false"
+            (scale
+              :min 0
+              :max 100
+              :active "true"
+              :onchange "mpc -q seek {}%"
+              :value song_time))
+          (label :class "song_end_time"
+            :halign "end"
+            :text song_end_time))
+
+        (box :class "music_popout_controls"
+          :orientation "h"
+          :space-evenly "false"
+          :vexpand "false"
+          :hexpand "false"
+          :halign "center"
+          :spacing 10
+
+          (button :class "music_popout_prev"
+            :onclick "scripts/music.sh --prev"
+            "󰙣")
+          (button :class "music_popout_play"
+            :onclick "scripts/music.sh --toggle"
+            song_status)
+          (button :class "music_popout_next"
+            :onclick "scripts/music.sh --next"
+            "󰙡"))))))
+
+
+(defwindow music_window_1
+  :stacking "fg" 
+  :focusable "false"
+  :monitor 1
+  :geometry (geometry
+              :y "1%"
+              :width "22%"
+              :height "19%"
+              :anchor "top center")
+  (music_popout :monitor 1))
+
+(defwindow music_window_0
+  :stacking "fg" 
+  :focusable "false"
+  :monitor 0
+  :geometry (geometry
+              :y "1%"
+              :width "22%"
+              :height "19%"
+              :anchor "top center")
+  (music_popout :monitor 0))
+
 ; Workspaces
 (deflisten workspaces :initial "[]" "bash ~/.config/eww/scripts/get-workspaces")
+
 (deflisten current_workspace0 :initial "1" "bash ~/.config/eww/scripts/get-active-workspace 0")
 (defwidget workspace0 []
-  (box 
+  (box :class "workspaces"
     :space-evenly false
+    :spacing 5
     (label 
       :text "${workspaces}${current_workspace0}" 
       :visible false)
@@ -57,13 +254,14 @@
         (box 
           :class "workspace-entry ${workspace.id == current_workspace0 ? "current" : ""} ${workspace.windows > 0 ? "occupied" : "empty"}"
           (label
-            :text "${workspace.id == current_workspace0 ? "" : ""} "))))))
+            :text "${workspace.id == current_workspace0 ? "" : ""}"))))))
   
 
 (deflisten current_workspace1 :initial "1" "bash ~/.config/eww/scripts/get-active-workspace 1")
 (defwidget workspace1 []
-  (box 
+  (box :class "workspaces"
     :space-evenly false
+    :spacing 5
     (label 
       :text "${workspaces}${current_workspace1}" 
       :visible false)
@@ -73,21 +271,21 @@
         (box 
           :class "workspace-entry ${workspace.id == current_workspace1 ? "current" : ""} ${workspace.windows > 0 ? "occupied" : "empty"}"
           (label
-            :text "${workspace.id == current_workspace1 ? "" : ""} "))))))
+            :text "${workspace.id == current_workspace1 ? "" : ""}"))))))
 
 ; Bar widgets
 (defwidget bar0 []
   (box :class "bar"
     (centerbox :orientation "h"
       (workspace0)
-      (clock)
+      (music_0) 
       (info))))
  
 (defwidget bar1 []
   (box :class "bar"
     (centerbox :orientation "h"
       (workspace1)
-      (clock)
+      (music_1)
       (info))))
 
 ; Bar windows

@@ -1,3 +1,3 @@
 #!/bin/sh
-date=$(TZ=CEST date +"%A %d %B %Y - %R")
-echo $date
+date=$(TZ=CEST date +"%a %b %d - %R")
+echo "$date "
