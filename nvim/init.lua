@@ -27,7 +27,7 @@ vim.opt.showmode = false
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
--- vim.opt.clipboard = 'unnamedplus'
+vim.opt.clipboard = 'unnamedplus'
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -207,19 +207,27 @@ require('lazy').setup({
       require('which-key').setup()
 
       -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-        ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
-        ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' },
+      require('which-key').add {
+        { '<leader>c', group = '[C]ode' },
+        { '<leader>c', hidden = true },
+        { '<leader>d', group = '[D]ocument' },
+        { '<leader>d', hidden = true },
+        { '<leader>r', group = '[R]ename' },
+        { '<leader>r', hidden = true },
+        { '<leader>s', group = '[S]earch' },
+        { '<leader>s', hidden = true },
+        { '<leader>w', group = '[W]orkspace' },
+        { '<leader>w', hidden = true },
+        { '<leader>t', group = '[T]oggle' },
+        { '<leader>t', hidden = true },
+        { '<leader>h', group = 'Git [H]unk' },
+        { '<leader>h', hidden = true },
       }
+
       -- visual mode
-      require('which-key').register({
-        ['<leader>h'] = { 'Git [H]unk' },
-      }, { mode = 'v' })
+      require('which-key').add {
+        { '<leader>h', group = 'Git [H]unk', mode = 'v' },
+      }
     end,
   },
 
@@ -509,6 +517,7 @@ require('lazy').setup({
             },
           },
         },
+        omnisharp = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -571,6 +580,7 @@ require('lazy').setup({
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
         python = { 'isort', 'black' },
+        cs = { 'csharpier' },
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
